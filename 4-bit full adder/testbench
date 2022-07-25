@@ -1,0 +1,64 @@
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.std_logic_unsigned.all;
+use IEEE.numeric_std.ALL;
+
+ENTITY testbench IS
+END testbench;
+
+ARCHITECTURE behavior OF testbench IS
+
+COMPONENT Adder4bit
+PORT(
+a: IN std_logic_vector(3 downto 0);
+b: IN std_logic_vector(3 downto 0);
+s: OUT std_logic_vector(3 downto 0);
+cout: OUT std_logic
+);
+END COMPONENT;
+
+SIGNAL a: std_logic_vector(3 downto 0) := (others=>'0');
+SIGNAL b: std_logic_vector(3 downto 0) := (others=>'0');
+
+SIGNAL s: std_logic_vector(3 downto 0);
+SIGNAL cout: std_logic;
+
+BEGIN
+
+DUT: Adder4bit PORT MAP(
+a=>a,
+b=>b,
+s=>s,
+cout=>cout
+);
+
+PROCESS
+BEGIN
+a<="0001";
+b<="1110";
+wait for 1 ns;
+assert(s="1111") report "Failed Case 1 - S" severity error;
+wait for 1 ns;
+
+a<="0001";
+b<="0000";
+wait for 1 ns;
+assert(s="0001") report "Failed Case 2 - S" severity error;
+wait for 1 ns;
+
+a<="1001";
+b<="0001";
+wait for 1 ns;
+assert(s="1010") report "Failed Case 3 - S" severity error;
+wait for 1 ns;
+
+a<="0111";
+b<="0001";
+wait for 1 ns;
+assert(s="1000") report "Failed Case 4 - S" severity error;
+wait for 1 ns;
+
+wait;
+END PROCESS;
+
+END;
