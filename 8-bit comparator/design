@@ -1,0 +1,56 @@
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.STD_LOGIC_ARITH.ALL;
+use IEEE.STD_LOGIC_UNSIGNED.ALL;
+
+--M-manje, V-vece, J-jednako
+entity Komparator1bit is
+Port (a,b : in STD_LOGIC;
+      M_in,V_in,J_in : in STD_LOGIC;
+      M_out,V_out,J_out : out  STD_LOGIC);
+end Komparator1bit;
+
+architecture Behavioral of Komparator1bit is
+
+begin
+  M_out<=M_in or ((not a and b) and J_in);
+  V_out<=V_in or ((a and not b) and J_in);
+  J_out<=(a xnor b) and J_in;
+end Behavioral;
+
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.STD_LOGIC_ARITH.ALL;
+use IEEE.STD_LOGIC_UNSIGNED.ALL;
+use ieee.numeric_std.all;
+
+entity Komparator8bit is
+port(a,b: in std_logic_vector(7 downto 0);
+     M_in,V_in,J_in: in std_logic;
+     M_out,V_out,J_out: out std_logic);
+end Komparator8bit;
+
+architecture Behavioral of Komparator8bit is
+
+component Komparator1bit
+port(a,b : in STD_LOGIC;
+      M_in,V_in,J_in : in STD_LOGIC;
+      M_out,V_out,J_out : out  STD_LOGIC);
+end component;
+
+signal j1,j2,j3,j4,j5,j6,j7,m1,m2,m3,m4,m5,m6,m7,v1,v2,v3,v4,v5,v6,v7: std_logic;
+
+begin
+--prije pocetka poredjenja biti su uvijek < '0', > '0' i = '1'
+--poredimo od najvišeg bita do najmanjeg
+
+  komparator7: Komparator1bit port map(a(7),b(7),'0','0','1',m1,v1,j1);
+  komparator6: Komparator1bit port map(a(6),b(6),m1,v1,j1,m2,v2,j2);
+  komparator5: Komparator1bit port map(a(5),b(5),m2,v2,j2,m3,v3,j3);
+  komparator4: Komparator1bit port map(a(4),b(4),m3,v3,j3,m4,v4,j4);
+  komparator3: Komparator1bit port map(a(3),b(3),m4,v4,j4,m5,v5,j5);
+  komparator2: Komparator1bit port map(a(2),b(2),m5,v5,j5,m6,v6,j6);
+  komparator1: Komparator1bit port map(a(1),b(1),m6,v6,j6,m7,v7,j7);
+  komparator0: Komparator1bit port map(a(0),b(0),m7,v7,j7,M_out,V_out,J_out);
+  
+end Behavioral;
