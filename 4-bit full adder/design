@@ -1,0 +1,46 @@
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.std_logic_arith.all;
+use IEEE.std_logic_unsigned.all;
+
+entity Adder1bit is
+port(a,b,cin: in std_logic;
+s,cout: out std_logic);
+end Adder1bit;
+
+architecture Behavioral of Adder1bit is
+
+begin
+s<=(a xor b) xor cin;
+cout<= (cin and (a xor b)) or (a and b);
+end Behavioral;
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.std_logic_arith.all;
+use IEEE.std_logic_unsigned.all;
+
+entity Adder4bit is
+port(a,b: in std_logic_vector( 3 downto 0);
+s: out std_logic_vector(3 downto 0);
+cout: out std_logic);
+end Adder4bit;
+
+architecture Behavioral of Adder4bit is
+
+component Adder1bit
+port(a,b,cin: in std_logic;
+s,cout: out std_logic);
+end component;
+
+signal c0,c1,c2,c3: std_logic;
+
+begin
+
+c0<='0';
+adder0: Adder1bit port map (a(0),b(0),c0,s(0),c1);
+adder1: Adder1bit port map (a(1),b(1),c1,s(1),c2);
+adder2: Adder1bit port map (a(2),b(2),c2,s(2),c3);
+adder3: Adder1bit port map (a(3),b(3),c3,s(3),cout);
+
+end Behavioral;
