@@ -1,0 +1,93 @@
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.std_logic_unsigned.all;
+use IEEE.numeric_std.ALL;
+
+ENTITY testbench IS
+END testbench;
+
+ARCHITECTURE behavior OF testbench IS
+
+COMPONENT Komparator8bit
+PORT(
+a: IN std_logic_vector(7 downto 0);
+b: IN std_logic_vector(7 downto 0);
+M_in,V_in,J_in: in std_logic;
+M_out,V_out,J_out: out std_logic
+);
+END COMPONENT;
+
+SIGNAL a: std_logic_vector(7 downto 0) := (others=>'0');
+SIGNAL b: std_logic_vector(7 downto 0) := (others=>'0');
+SIGNAL M_in: std_logic;
+SIGNAL V_in: std_logic;
+SIGNAL J_in: std_logic;
+
+SIGNAL M_out: std_logic;
+SIGNAL V_out: std_logic;
+SIGNAL J_out: std_logic;
+
+BEGIN
+
+DUT: Komparator8bit PORT MAP(
+a=>a,
+b=>b,
+M_in=>M_in,
+V_in=>V_in,
+J_in=>J_in,
+M_out=>M_out,
+V_out=>V_out,
+J_out=>J_out
+);
+
+PROCESS
+BEGIN
+a<="10000000";
+b<="10000000";
+M_in<='0';
+V_in<='0';
+J_in<='1';
+wait for 1 ns;
+assert(J_out='1') report "Failed Case 1" severity error;
+wait for 1 ns;
+
+a<="10000011";
+b<="10000001";
+M_in<='0';
+V_in<='0';
+J_in<='1';
+wait for 1 ns;
+assert(V_out='1') report "Failed Case 2" severity error;
+wait for 1 ns;
+
+a<="10000000";
+b<="11111111";
+M_in<='0';
+V_in<='0';
+J_in<='1';
+wait for 1 ns;
+assert(M_out='1') report "Failed Case 3" severity error;
+wait for 1 ns;
+
+a<="11100000";
+b<="01100001";
+M_in<='0';
+V_in<='0';
+J_in<='1';
+wait for 1 ns;
+assert(V_out='1') report "Failed Case 4" severity error;
+wait for 1 ns;
+
+a<="01100000";
+b<="01100001";
+M_in<='0';
+V_in<='0';
+J_in<='1';
+wait for 1 ns;
+assert(M_out='1') report "Failed Case 5" severity error;
+wait for 1 ns;
+
+wait;
+END PROCESS;
+
+END;
