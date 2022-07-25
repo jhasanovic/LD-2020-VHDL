@@ -1,0 +1,78 @@
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.std_logic_unsigned.all;
+use IEEE.numeric_std.ALL;
+
+ENTITY MUX21 is
+PORT(a,b: in std_logic;
+     s: in std_logic;
+     y: out std_logic);
+end MUX21;
+
+Architecture Behavioral of MUX21 is
+begin
+  with s select
+  y<= a when '0',
+      b when '1',
+      '0' when others;
+end Behavioral;
+
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.STD_LOGIC_ARITH.ALL;
+use IEEE.STD_LOGIC_UNSIGNED.ALL;
+use ieee.numeric_std.all;
+
+ENTITY BarrelShifter8bit is
+PORT(ulaz: in std_logic_vector(7 downto 0);
+     R: in std_logic_vector(2 downto 0);
+     izlaz: out std_logic_vector(7 downto 0)
+    );
+
+end BarrelShifter8bit;
+
+Architecture Behavioral of BarrelShifter8bit is
+
+component MUX21
+PORT(a,b: in std_logic;
+     s: in std_logic;
+     y: out std_logic);
+end component;
+
+signal i1,i2,i3,i4,i5,i6,i7,i8,i11,i21,i31,i41,i51,i61,i71,i81 : std_logic;--izlazi iz multipleksera
+
+begin
+--prva linija multipleksera
+--u svaki select bit dovesti R(0)
+  m11: MUX21 port map(ulaz(0),ulaz(4),R(2),i1);
+  m12: MUX21 port map(ulaz(1),ulaz(5),R(2),i2);
+  m13: MUX21 port map(ulaz(2),ulaz(6),R(2),i3);
+  m14: MUX21 port map(ulaz(3),ulaz(7),R(2),i4);
+  m15: MUX21 port map(ulaz(4),ulaz(0),R(2),i5);
+  m16: MUX21 port map(ulaz(5),ulaz(1),R(2),i6);
+  m17: MUX21 port map(ulaz(6),ulaz(2),R(2),i7);
+  m18: MUX21 port map(ulaz(7),ulaz(3),R(2),i8);
+  
+--druga linija multipleksera
+--u svaki select bit dovesti R(1)
+  m21: MUX21 port map(i1,i3,R(1),i11);
+  m22: MUX21 port map(i2,i4,R(1),i21);
+  m23: MUX21 port map(i3,i5,R(1),i31);
+  m24: MUX21 port map(i4,i6,R(1),i41);
+  m25: MUX21 port map(i5,i7,R(1),i51);
+  m26: MUX21 port map(i6,i8,R(1),i61);
+  m27: MUX21 port map(i7,i1,R(1),i71);
+  m28: MUX21 port map(i8,i2,R(1),i81);
+  
+--treca linija multipleksera
+--u svaki select bit dovesti R(0)
+  m31: MUX21 port map(i11,i21,R(0),izlaz(0));
+  m32: MUX21 port map(i21,i31,R(0),izlaz(1));
+  m33: MUX21 port map(i31,i41,R(0),izlaz(2));
+  m34: MUX21 port map(i41,i51,R(0),izlaz(3));
+  m35: MUX21 port map(i51,i61,R(0),izlaz(4));
+  m36: MUX21 port map(i61,i71,R(0),izlaz(5));
+  m37: MUX21 port map(i71,i81,R(0),izlaz(6));
+  m38: MUX21 port map(i81,i11,R(0),izlaz(7));
+  
+end Behavioral;
