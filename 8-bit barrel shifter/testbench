@@ -1,0 +1,59 @@
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.std_logic_unsigned.all;
+use IEEE.numeric_std.ALL;
+
+ENTITY testbench IS
+END testbench;
+
+ARCHITECTURE behavior OF testbench IS
+
+COMPONENT BarrelShifter8bit
+PORT(ulaz: in std_logic_vector(7 downto 0);
+     R: in std_logic_vector(2 downto 0);
+       izlaz: out std_logic_vector(7 downto 0)
+    );
+END COMPONENT;
+
+SIGNAL ulaz: std_logic_vector(7 downto 0) :=(others=>'0');
+SIGNAL R: std_logic_vector(2 downto 0) := (others=>'0');
+
+SIGNAL izlaz: std_logic_vector(7 downto 0);
+
+begin
+DUT: BarrelShifter8bit PORT MAP(
+ulaz=>ulaz,
+R=>R,
+izlaz=>izlaz
+);
+
+PROCESS
+BEGIN
+ulaz<="01001000";
+R<="010";
+wait for 1 ns;
+assert(izlaz="00010010") report "Failed Case 1" severity error;
+wait for 1 ns;
+
+ulaz<="11001100";
+R<="011";
+wait for 1 ns;
+assert(izlaz="10011001") report "Failed Case 2" severity error;
+wait for 1 ns;
+
+ulaz<="11100111";
+R<="000";
+wait for 1 ns;
+assert(izlaz="11100111") report "Failed Case 3" severity error;
+wait for 1 ns;
+
+ulaz<="11101100";
+R<="111";
+wait for 1 ns;
+assert(izlaz="11011001") report "Failed Case 4" severity error;
+wait for 1 ns;
+
+wait;
+END PROCESS;
+
+END;
